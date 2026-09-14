@@ -6,10 +6,11 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
-# If the request matches an existing directory, serve it
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
-
-# Try adding .html extension
+# Try adding .html extension (even if a directory with same name exists)
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.*)$ $1.html [L]
+
+# If the request matches an existing directory with index.html, serve it
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}/index.html -f
+RewriteRule ^ %{REQUEST_URI}/index.html [L]
