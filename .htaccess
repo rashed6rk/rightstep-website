@@ -1,12 +1,17 @@
-DirectoryIndex index.html
+Options -Indexes
 DirectorySlash Off
 
-RewriteEngine On
+<IfModule mod_rewrite.c>
+  RewriteEngine On
 
-# If the request matches an existing file, serve it directly
-RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^ - [L]
+  # Existing file — serve it
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
 
-# Try adding .html extension
-RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-RewriteRule ^(.+)$ /$1.html [L]
+  # Path.html exists — serve it (clean URLs)
+  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}.html -f
+  RewriteRule ^ %{REQUEST_URI}.html [L]
+
+  # Fallback to 404
+  RewriteRule ^ /404.html [L]
+</IfModule>
