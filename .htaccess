@@ -8,8 +8,15 @@ DirectorySlash Off
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
 
-  # Path.html exists — serve it (clean URLs)
-  RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI}.html -f
+  # URI is a directory but URI.html also exists — serve the .html
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^ %{REQUEST_URI}.html [L]
+
+  # URI is not a file or directory, but URI.html exists — serve it
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}.html -f
   RewriteRule ^ %{REQUEST_URI}.html [L]
 
   # Fallback to 404
