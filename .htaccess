@@ -1,4 +1,14 @@
 RewriteEngine On
-RewriteRule ^$ /out/ar [L,R=302]
-RewriteCond %{REQUEST_URI} !^/out/
-RewriteRule ^(.*)$ /out/$1 [L]
+
+# Serve existing files in out/ directly (CSS, JS, images, etc.)
+RewriteCond %{REQUEST_URI} ^/out/
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f
+RewriteRule ^ - [L]
+
+# Route everything else through index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+# Root with no file should also go to index.php
+DirectoryIndex index.php
