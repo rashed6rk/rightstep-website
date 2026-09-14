@@ -1,14 +1,15 @@
+DirectoryIndex index.html
+
 RewriteEngine On
 
-# Serve existing files in out/ directly (CSS, JS, images, etc.)
-RewriteCond %{REQUEST_URI} ^/out/
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} -f
+# If the request matches an existing file, serve it directly
+RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
-# Route everything else through index.php
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [L]
+# If the request matches an existing directory, serve it
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# Root with no file should also go to index.php
-DirectoryIndex index.php
+# Try adding .html extension
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]
