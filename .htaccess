@@ -1,24 +1,16 @@
 Options -Indexes
 DirectorySlash Off
 
+ErrorDocument 404 /index.php
+ErrorDocument 403 /index.php
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Existing file — serve it
+  # Existing file — serve directly
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
 
-  # URI is a directory but URI.html also exists — serve the .html
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteCond %{REQUEST_FILENAME}.html -f
-  RewriteRule ^ %{REQUEST_URI}.html [L]
-
-  # URI is not a file or directory, but URI.html exists — serve it
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME}.html -f
-  RewriteRule ^ %{REQUEST_URI}.html [L]
-
-  # Fallback to 404
-  RewriteRule ^ /404.html [L]
+  # Everything else goes to PHP router
+  RewriteRule ^ /index.php [L]
 </IfModule>
