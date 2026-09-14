@@ -177,7 +177,7 @@ export function buildPortalData(now = Date.now(), offsetHours = 30) {
     titleKey: "coachingSession",
     startISO: new Date(sessionStart).toISOString(),
     minutes: 45,
-    consultant: "Omar Haddad",
+    consultant: "د. عبدالهادي",
     meetUrl: "https://meet.google.com/abc-defg-hij",
     calendarUrl: "https://calendar.google.com/calendar/render?action=TEMPLATE",
   };
@@ -232,7 +232,7 @@ export function buildPortalData(now = Date.now(), offsetHours = 30) {
       titleKey: "keynotePrep",
       startISO: new Date(sessionStart + 6 * DAY).toISOString(),
       minutes: 120,
-      consultant: "Layla Ibrahim",
+      consultant: "د. عبدالهادي",
       meetUrl: "https://meet.google.com/xyz-uvwx-rst",
       calendarUrl:
         "https://calendar.google.com/calendar/render?action=TEMPLATE",
@@ -245,7 +245,7 @@ export function buildPortalData(now = Date.now(), offsetHours = 30) {
       titleKey: "planWalkthrough",
       startISO: new Date(now - 9 * DAY).toISOString(),
       minutes: 60,
-      consultant: "Omar Haddad",
+      consultant: "د. عبدالهادي",
       hasNotes: true,
     },
     {
@@ -253,7 +253,7 @@ export function buildPortalData(now = Date.now(), offsetHours = 30) {
       titleKey: "diagnosisReadout",
       startISO: new Date(now - 28 * DAY).toISOString(),
       minutes: 60,
-      consultant: "Omar Haddad",
+      consultant: "د. عبدالهادي",
       hasNotes: true,
     },
     {
@@ -261,7 +261,7 @@ export function buildPortalData(now = Date.now(), offsetHours = 30) {
       titleKey: "discoveryCall",
       startISO: new Date(now - 46 * DAY).toISOString(),
       minutes: 30,
-      consultant: "Omar Haddad",
+      consultant: "د. عبدالهادي",
       hasNotes: false,
     },
   ];

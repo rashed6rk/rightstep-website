@@ -599,10 +599,21 @@
     "passwordLabel": "Password",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
-    "notConnectedTitle": "Accounts are not connected yet",
-    "notConnectedBody": "This screen is the finished interface. Sign-in will start working once an authentication provider is wired up behind it.",
-    "demoNotice": "Demo interface — no authentication service is connected. Passwords must be handled by a dedicated provider, never verified or stored by application code.",
+    "notConnectedTitle": "Connection error",
+    "notConnectedBody": "Unable to reach the server. Please check your connection and try again.",
+    "demoNotice": "",
     "viewDemo": "View the client portal"
+  },
+  "otp": {
+    "title": "Enter verification code",
+    "sentTo": "We sent a 6-digit code to",
+    "digit": "Digit",
+    "verifying": "Verifying…",
+    "resend": "Resend code",
+    "resendIn": "Resend in",
+    "resending": "Sending…",
+    "back": "Back to login",
+    "genericError": "Something went wrong. Please try again."
   },
   "login": {
     "title": "Welcome back",

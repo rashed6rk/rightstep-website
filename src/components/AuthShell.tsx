@@ -44,9 +44,11 @@ export function AuthShell({
               {footer}
             </div>
 
-            <p className="mt-6 text-xs leading-relaxed text-ink-faint">
-              {t("demoNotice")}
-            </p>
+            {t("demoNotice") && (
+              <p className="mt-6 text-xs leading-relaxed text-ink-faint">
+                {t("demoNotice")}
+              </p>
+            )}
           </div>
 
           {/* --- The reason to have an account ---

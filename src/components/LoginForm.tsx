@@ -2,21 +2,64 @@
 
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/routing";
 import { Field, PasswordField, fieldClass } from "./Field";
-import { NotConnectedNotice } from "./AuthNotice";
+import { OTPForm } from "./OTPForm";
+import { login, getStoredUser } from "@/lib/auth";
+
+type Step = "credentials" | "otp";
 
 export function LoginForm() {
   const t = useTranslations("login");
   const tAuth = useTranslations("auth");
-  const [status, setStatus] = useState<"idle" | "working" | "blocked">("idle");
+  const router = useRouter();
+  const [step, setStep] = useState<Step>("credentials");
+  const [status, setStatus] = useState<"idle" | "working">("idle");
+  const [error, setError] = useState("");
+  const [otpId, setOtpId] = useState(0);
+  const [email, setEmail] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("working");
-    // TODO: hand off to the auth provider's sign-in call. Application code
-    // must never compare or store the password itself.
-    window.setTimeout(() => setStatus("blocked"), 600);
+    setError("");
+
+    const fd = new FormData(event.currentTarget);
+    const emailVal = (fd.get("email") as string).trim().toLowerCase();
+    const password = fd.get("password") as string;
+
+    try {
+      const res = await login(emailVal, password);
+      setOtpId(res.otpId);
+      setEmail(res.email);
+      setStep("otp");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : tAuth("notConnectedBody"));
+    } finally {
+      setStatus("idle");
+    }
+  }
+
+  function handleVerified() {
+    const user = getStoredUser();
+    if (user?.role === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/portal");
+    }
+  }
+
+  if (step === "otp") {
+    return (
+      <OTPForm
+        otpId={otpId}
+        email={email}
+        purpose="login"
+        onVerified={handleVerified}
+        onBack={() => setStep("credentials")}
+      />
+    );
   }
 
   return (
@@ -49,19 +92,10 @@ export function LoginForm() {
         </Link>
       </div>
 
-      {status === "blocked" && (
-        <NotConnectedNotice
-          title={tAuth("notConnectedTitle")}
-          body={tAuth("notConnectedBody")}
-          action={
-            <Link
-              href="/portal"
-              className="inline-flex min-h-8 items-center gap-1.5 text-sm font-bold text-heading underline underline-offset-4 transition-colors hover:text-coral-ink"
-            >
-              {tAuth("viewDemo")}
-            </Link>
-          }
-        />
+      {error && (
+        <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4">
+          <p className="text-sm font-medium text-red-700">{error}</p>
+        </div>
       )}
 
       <button

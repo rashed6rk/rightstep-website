@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# Allow direct PHP file access
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Block directory listing
+Options -Indexes

@@ -2,19 +2,64 @@
 
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Field, PasswordField, fieldClass } from "./Field";
-import { NotConnectedNotice } from "./AuthNotice";
+import { OTPForm } from "./OTPForm";
+import { signup, getStoredUser } from "@/lib/auth";
+
+type Step = "form" | "otp";
 
 export function SignupForm() {
   const t = useTranslations("signup");
   const tAuth = useTranslations("auth");
-  const [status, setStatus] = useState<"idle" | "working" | "blocked">("idle");
+  const router = useRouter();
+  const [step, setStep] = useState<Step>("form");
+  const [status, setStatus] = useState<"idle" | "working">("idle");
+  const [error, setError] = useState("");
+  const [otpId, setOtpId] = useState(0);
+  const [email, setEmail] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("working");
-    // TODO: hand off to the auth provider's registration call.
-    window.setTimeout(() => setStatus("blocked"), 600);
+    setError("");
+
+    const fd = new FormData(event.currentTarget);
+    const name = (fd.get("name") as string).trim();
+    const emailVal = (fd.get("email") as string).trim().toLowerCase();
+    const password = fd.get("password") as string;
+
+    try {
+      const res = await signup(name, emailVal, password);
+      setOtpId(res.otpId);
+      setEmail(res.email);
+      setStep("otp");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setStatus("idle");
+    }
+  }
+
+  function handleVerified() {
+    const user = getStoredUser();
+    if (user?.role === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/portal");
+    }
+  }
+
+  if (step === "otp") {
+    return (
+      <OTPForm
+        otpId={otpId}
+        email={email}
+        purpose="signup"
+        onVerified={handleVerified}
+        onBack={() => setStep("form")}
+      />
+    );
   }
 
   return (
@@ -44,8 +89,6 @@ export function SignupForm() {
         />
       </Field>
 
-      {/* 12 characters, matching the hint. Length beats composition rules —
-          NIST dropped forced symbol/number mixes years ago. */}
       <PasswordField
         label={tAuth("passwordLabel")}
         name="password"
@@ -74,11 +117,10 @@ export function SignupForm() {
         </span>
       </label>
 
-      {status === "blocked" && (
-        <NotConnectedNotice
-          title={tAuth("notConnectedTitle")}
-          body={tAuth("notConnectedBody")}
-        />
+      {error && (
+        <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4">
+          <p className="text-sm font-medium text-red-700">{error}</p>
+        </div>
       )}
 
       <button
