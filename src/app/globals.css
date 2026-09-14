@@ -1,0 +1,355 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   RIGHT STEP — Brand token layer
+   Palette is locked. Pure black (#000000) is never used, not even in shadows;
+   every shadow is a tinted navy so the whole surface stays in-family.
+   ========================================================================== */
+
+@theme {
+  /* ------------------------------------------------------------------------
+     PRIMITIVES — four hue ramps, built in OKLCH.
+     Every step keeps its hue and moves on lightness, with chroma tapered at
+     both ends so tints don't go pastel-neon and darks don't turn to mud.
+     The four locked brand hexes are pinned exactly onto their own step:
+       navy-900  #12294B   teal-500 #1596A0
+       gold-400  #C9A227   coral-400 #E8873A
+     Everything else is derived, so the family stays coherent as it extends.
+     ---------------------------------------------------------------------- */
+
+  --color-navy-50: #f3f8ff;
+  --color-navy-100: #e6f0fd;
+  --color-navy-200: #d1e2fa;
+  --color-navy-300: #b5cef3;
+  --color-navy-400: #8eb1e5;
+  --color-navy-500: #6d96d3;
+  --color-navy-600: #527bb8;
+  --color-navy-700: #3b5f94;
+  --color-navy-800: #25426f;
+  --color-navy-900: #12294b; /* BRAND — trust / professionalism */
+  --color-navy-950: #071831;
+
+  --color-teal-50: #ecf6f7;
+  --color-teal-100: #d8ecee;
+  --color-teal-200: #badde1;
+  --color-teal-300: #92cacf;
+  --color-teal-400: #5ab0b8;
+  --color-teal-500: #1596a0; /* BRAND — energy / vitality */
+  --color-teal-600: #00818b;
+  --color-teal-700: #006871;
+  --color-teal-800: #004e56;
+  --color-teal-900: #00373d;
+
+  --color-gold-50: #f8f4e7;
+  --color-gold-100: #f2e9d0;
+  --color-gold-200: #e9d8ab;
+  --color-gold-300: #dcc179;
+  --color-gold-400: #c9a227; /* BRAND — achievement */
+  --color-gold-500: #b88800;
+  --color-gold-600: #a17000;
+  --color-gold-700: #845800;
+  --color-gold-800: #654100;
+  --color-gold-900: #482b00;
+
+  --color-coral-50: #fdf0e7;
+  --color-coral-100: #fce2d0;
+  --color-coral-200: #faccad;
+  --color-coral-300: #f4ae7e;
+  --color-coral-400: #e8873a; /* BRAND — ACTION, calls to action only */
+  --color-coral-500: #db6700;
+  --color-coral-600: #c44d00;
+  --color-coral-700: #a33800;
+  --color-coral-800: #7e2500;
+
+  /* Neutrals are navy-tinted, not gray: same hue as the brand navy at very
+     low chroma, so greys sit in the family instead of beside it. */
+  --color-ink-50: #f6f8fa;
+  --color-ink-100: #ebeff4;
+  --color-ink-200: #dae1ea;
+  --color-ink-300: #c3cddb;
+  --color-ink-400: #a1afc2;
+  --color-ink-500: #8393aa;
+  --color-ink-600: #636e7d;
+  --color-ink-700: #4c5b6e;
+  --color-ink-800: #323e4e;
+  --color-ink-900: #1b2430; /* BRAND — charcoal navy, all body text */
+  --color-ink-950: #0e141d;
+
+  /* ------------------------------------------------------------------------
+     SEMANTIC ROLES — what the interface actually reaches for.
+     Each is an alias onto a primitive step, so re-theming is a remap, and the
+     measured contrast is recorded next to the role that depends on it.
+     ---------------------------------------------------------------------- */
+
+  --color-navy: var(--color-navy-900);
+  --color-navy-deep: var(--color-navy-950); /* stacked dark sections */
+  --color-navy-soft: var(--color-navy-800); /* lifted cards on dark */
+
+  --color-teal: var(--color-teal-500);
+  --color-teal-soft: var(--color-teal-50);
+  --color-teal-ink: var(--color-teal-700); /* teal as text — 6.52:1 on white,
+     5.93:1 on its own teal-50 tint, so one token is safe on both */
+  --color-teal-bright: var(--color-teal-300); /* teal on navy — 8.01:1 */
+
+  --color-gold: var(--color-gold-400);
+  --color-gold-soft: var(--color-gold-50);
+  --color-gold-ink: var(--color-gold-700); /* gold as text on white — 6.22:1 */
+
+  --color-coral: var(--color-coral-400);
+  --color-coral-lift: var(--color-coral-300); /* CTA hover — 7.76:1 on navy */
+  --color-coral-soft: var(--color-coral-50);
+  --color-coral-ink: var(--color-coral-700); /* coral as text — 6.72:1 on
+     white and 6.0:1 on its own coral-50 tint, so it works on both surfaces */
+
+  /* Headings and emphatic text. Split out from --color-navy because that token
+     does two jobs: it is also the fill behind white text, and the foreground
+     on coral and gold chips. Only the heading role may invert in dark mode —
+     flipping the others would turn navy-on-coral into white-on-coral (2.6:1). */
+  --color-heading: var(--color-navy-900);
+
+  --color-ink: var(--color-ink-900);
+  --color-ink-muted: var(--color-ink-700); /* secondary text — 6.93:1 */
+  --color-ink-faint: var(--color-ink-600); /* labels / meta — 5.18:1 on
+     white, 4.86:1 on the banded surface it also has to survive */
+  --color-line: var(--color-ink-200);
+  --color-line-strong: var(--color-ink-300);
+  --color-surface: #ffffff;
+  --color-surface-alt: var(--color-ink-50); /* section banding */
+
+  /* --- Typography ---------------------------------------------------------
+     Two Latin families with one job each, and a single Arabic family that
+     covers both roles. Body Latin is IBM Plex Sans, whose Arabic sibling is
+     the Arabic face — so the two scripts share one type designer's system
+     rather than being bolted together.
+     ---------------------------------------------------------------------- */
+  --font-bricolage: "Bricolage Grotesque";
+  --font-plex: "IBM Plex Sans";
+  --font-plex-arabic: "IBM Plex Sans Arabic";
+  --font-display: var(--font-bricolage), var(--font-plex), ui-sans-serif,
+    system-ui, sans-serif;
+  --font-latin: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: var(--font-plex-arabic), ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Shadows (navy-tinted, never black) ------------------------------- */
+  --shadow-step: 0 1px 2px rgb(18 41 75 / 0.06), 0 8px 24px rgb(18 41 75 / 0.08);
+  --shadow-step-lg: 0 2px 4px rgb(18 41 75 / 0.06),
+    0 18px 48px rgb(18 41 75 / 0.14);
+  --shadow-cta: 0 6px 16px rgb(18 41 75 / 0.10), 0 2px 4px rgb(18 41 75 / 0.06);
+
+  /* --- Motion ----------------------------------------------------------- */
+  --ease-step: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-latin);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Headings take the display face; body and UI stay on the text face. Two
+   families, one job each — the hierarchy is carried by the change in voice,
+   not by size alone. */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+
+/* Bricolage tightens further as it gets larger; small headings need the
+   tracking back or they close up. */
+h4 {
+  letter-spacing: -0.012em;
+}
+
+/* Tabular figures wherever numbers are compared down a column — prices,
+   dates, seat counts, statistics. */
+time,
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Arabic ---------------------------------------------------------------
+   One family covers both roles: there is no Arabic companion to the display
+   face, and faking one by stretching a text face would be worse than using
+   Plex Arabic's own bold. Arabic also needs more leading and never takes
+   letter-spacing, which would break the joins between letters. */
+:root[dir="rtl"] body,
+[lang="ar"] {
+  font-family: var(--font-arabic);
+  line-height: 1.85;
+}
+
+:root[dir="rtl"] h1,
+:root[dir="rtl"] h2,
+:root[dir="rtl"] h3,
+:root[dir="rtl"] h4 {
+  font-family: var(--font-arabic);
+  line-height: 1.45;
+}
+
+:root[dir="rtl"] h1,
+:root[dir="rtl"] h2,
+:root[dir="rtl"] h3,
+:root[dir="rtl"] h4,
+:root[dir="rtl"] [class*="tracking-"] {
+  letter-spacing: normal;
+}
+
+/* Light text on a dark ground looks thinner than it is — give it a touch more
+   leading and tracking back so it reads at the same weight as on white. */
+.on-dark-text {
+  letter-spacing: 0.006em;
+  line-height: 1.7;
+}
+:root[dir="rtl"] .on-dark-text {
+  letter-spacing: normal;
+}
+
+::selection {
+  background-color: var(--color-coral);
+  color: #fff;
+}
+
+/* Tailwind v4 dropped the browser default `cursor: pointer` on buttons, so
+   every button on the site was showing an arrow. Restored here once rather
+   than adding a utility to 18 call sites — and only where it is true: a
+   disabled control is not clickable. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+summary,
+label[for],
+select:not(:disabled) {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-teal);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   "The Steps" motif — shared utilities
+   ========================================================================== */
+
+/* Diagonal riser used as a section divider: reads as the edge of a stair. */
+@utility riser-top {
+  clip-path: polygon(0 3.5rem, 100% 0, 100% 100%, 0 100%);
+}
+@utility riser-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3.5rem), 0 100%);
+}
+
+/* RTL mirrors the diagonal so the stair always climbs in the reading
+   direction — left-to-right in English, right-to-left in Arabic. */
+:root[dir="rtl"] .riser-top {
+  clip-path: polygon(0 0, 100% 3.5rem, 100% 100%, 0 100%);
+}
+:root[dir="rtl"] .riser-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3.5rem));
+}
+
+/* Stair treads receding up a dark section: horizontal rules only, spacing
+   tightening toward the top so the surface reads as a staircase in
+   perspective. Deliberately not a square grid — vertical lines would make it
+   a generic grid field and say nothing about steps. */
+@utility tread-lines {
+  background-image: repeating-linear-gradient(
+    to top,
+    rgb(255 255 255 / 0.055) 0 1px,
+    transparent 1px 88px
+  );
+  background-position: bottom;
+}
+
+/* ---------------------------------------------------------------------------
+   The one authored motion moment on the site: the staircase builds itself.
+   Risers grow up out of the floor, each one a beat behind the last, and the
+   step cards settle in behind them. Nothing else on the page animates in.
+   --------------------------------------------------------------------------- */
+
+.stair .stair-riser {
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.85s var(--ease-step);
+}
+.stair.is-visible .stair-riser {
+  transform: scaleY(1);
+}
+
+.stair .stair-card {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s var(--ease-step),
+    transform 0.6s var(--ease-step);
+}
+.stair.is-visible .stair-card {
+  opacity: 1;
+  transform: none;
+}
+
+/* Marquee for the client logo strip. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 38s linear infinite;
+}
+:root[dir="rtl"] .animate-marquee {
+  animation-direction: reverse;
+}
+/* Only the alpha channel of a mask is read, so the opaque stops use navy
+   rather than #000 — this file stays literally free of pure black. */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #12294b 8%,
+    #12294b 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #12294b 8%,
+    #12294b 92%,
+    transparent
+  );
+}

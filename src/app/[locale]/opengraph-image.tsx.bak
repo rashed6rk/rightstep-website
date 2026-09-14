@@ -1,0 +1,126 @@
+import { ImageResponse } from "next/og";
+import { getTranslations } from "next-intl/server";
+
+/**
+ * Share image, generated at build time by Next's own renderer.
+ *
+ * No external image service or API key involved — this is drawn from the brand
+ * tokens directly, so it can never drift from the site's colours. Applies to
+ * every route under [locale] unless a page defines its own.
+ */
+export const size = { width: 1200, height: 630 };
+export const contentType = "image/png";
+export const alt = "Right Step";
+
+export default async function OpengraphImage({
+  params,
+}: {
+  params: { locale: string };
+}) {
+  const { locale } = params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const isArabic = locale === "ar";
+
+  // The staircase, as five ascending treads — the same motif as the site.
+  const treads = [
+    { h: 90, c: "#004e56" },
+    { h: 150, c: "#006871" },
+    { h: 215, c: "#845800" },
+    { h: 285, c: "#b88800" },
+    { h: 360, c: "#e8873a" },
+  ];
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          background: "#0e141d",
+          padding: 72,
+          direction: isArabic ? "rtl" : "ltr",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 16,
+                background: "#12294b",
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "center",
+                gap: 4,
+                padding: 10,
+              }}
+            >
+              <div style={{ width: 9, height: 14, background: "#1596a0", borderRadius: 2 }} />
+              <div style={{ width: 9, height: 22, background: "#c9a227", borderRadius: 2 }} />
+              <div style={{ width: 9, height: 30, background: "#e8873a", borderRadius: 2 }} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ fontSize: 30, fontWeight: 700, color: "#ffffff" }}>
+                {t("brand")}
+              </div>
+              <div style={{ fontSize: 17, color: "#8393aa", marginTop: 2 }}>
+                {t("slogan")}
+              </div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              fontSize: 62,
+              fontWeight: 800,
+              color: "#ffffff",
+              lineHeight: 1.15,
+              marginTop: 48,
+              maxWidth: 900,
+            }}
+          >
+            {t("home.title").split("—")[0].trim()}
+          </div>
+          <div
+            style={{
+              fontSize: 27,
+              color: "#a1afc2",
+              marginTop: 20,
+              maxWidth: 880,
+              lineHeight: 1.4,
+            }}
+          >
+            {t("home.description").slice(0, 118)}
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            gap: 12,
+            justifyContent: isArabic ? "flex-start" : "flex-end",
+          }}
+        >
+          {treads.map((tread, i) => (
+            <div
+              key={i}
+              style={{
+                width: 74,
+                height: tread.h * 0.42,
+                background: tread.c,
+                borderTopLeftRadius: 8,
+                borderTopRightRadius: 8,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    ),
+    size,
+  );
+}
