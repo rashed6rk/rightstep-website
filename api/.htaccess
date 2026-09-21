@@ -1,5 +1,10 @@
 RewriteEngine On
 
+# Block access to .env and sensitive files
+<FilesMatch "^\.env|\.sql$|env\.example">
+    Require all denied
+</FilesMatch>
+
 # Allow direct PHP file access
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]

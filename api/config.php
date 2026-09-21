@@ -9,19 +9,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$DB_HOST = getenv('DB_HOST') ?: 'localhost';
-$DB_NAME = getenv('DB_NAME') ?: 'u123456789_rightstep';
-$DB_USER = getenv('DB_USER') ?: 'u123456789_admin';
-$DB_PASS = getenv('DB_PASS') ?: '';
+// Load .env file if it exists (Hostinger shared hosting doesn't support env vars)
+$envFile = __DIR__ . '/.env';
+if (file_exists($envFile)) {
+    foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        if (str_starts_with(trim($line), '#')) continue;
+        if (!str_contains($line, '=')) continue;
+        [$key, $val] = explode('=', $line, 2);
+        $_ENV[trim($key)] = trim($val);
+    }
+}
 
-$JWT_SECRET = getenv('JWT_SECRET') ?: 'CHANGE_ME_IN_PRODUCTION_' . md5(__DIR__);
+function env(string $key, string $default = ''): string {
+    return $_ENV[$key] ?? getenv($key) ?: $default;
+}
+
+$DB_HOST = env('DB_HOST', 'localhost');
+$DB_NAME = env('DB_NAME');
+$DB_USER = env('DB_USER');
+$DB_PASS = env('DB_PASS');
+
+$JWT_SECRET = env('JWT_SECRET', 'CHANGE_ME_IN_PRODUCTION_' . md5(__DIR__));
 $OTP_EXPIRY_MINUTES = 10;
 $OTP_LENGTH = 6;
 
-$SMTP_HOST = getenv('SMTP_HOST') ?: 'smtp.hostinger.com';
-$SMTP_PORT = getenv('SMTP_PORT') ?: 465;
-$SMTP_USER = getenv('SMTP_USER') ?: 'noreply@rightstepae.com';
-$SMTP_PASS = getenv('SMTP_PASS') ?: '';
+$SMTP_HOST = env('SMTP_HOST', 'smtp.hostinger.com');
+$SMTP_PORT = (int) env('SMTP_PORT', '465');
+$SMTP_USER = env('SMTP_USER', 'noreply@rightstepae.com');
+$SMTP_PASS = env('SMTP_PASS');
 $SMTP_FROM_NAME = 'Right Step Consultancy';
 
 function getDB() {

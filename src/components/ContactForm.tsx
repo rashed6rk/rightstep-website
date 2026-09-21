@@ -17,36 +17,48 @@ export function ContactForm() {
 
   const [status, setStatus] = useState<Status>("idle");
 
+  const [error, setError] = useState("");
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("sending");
+    setError("");
 
     const fd = new FormData(event.currentTarget);
-    const data = Object.fromEntries(fd);
+    const payload = {
+      name: fd.get("name") as string,
+      email: fd.get("email") as string,
+      phone: fd.get("phone") as string,
+      service: fd.get("service") as string,
+      budget: fd.get("budget") as string,
+      message: fd.get("message") as string,
+    };
 
-    const lines = [
-      `الاسم: ${data.name}`,
-      `الإيميل: ${data.email}`,
-      data.phone ? `الهاتف: ${data.phone}` : "",
-      `الخدمة: ${data.service}`,
-      data.budget ? `الميزانية: ${data.budget}` : "",
-      `الرسالة: ${data.message}`,
-    ].filter(Boolean).join("\n");
-
-    const waText = encodeURIComponent(lines);
-    const waUrl = `${site.whatsapp}?text=${waText}`;
-
-    const mailSubject = encodeURIComponent(`استفسار من ${data.name} — رايت ستيب`);
-    const mailBody = encodeURIComponent(lines);
-    const mailUrl = `mailto:${site.email}?subject=${mailSubject}&body=${mailBody}`;
-
-    window.open(waUrl, "_blank");
-
-    const mailLink = document.createElement("a");
-    mailLink.href = mailUrl;
-    mailLink.click();
-
-    setStatus("sent");
+    try {
+      const res = await fetch("/api/contact.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setStatus("sent");
+        return;
+      }
+      throw new Error(json.error || "failed");
+    } catch {
+      // Fallback: open WhatsApp with the message
+      const lines = [
+        `الاسم: ${payload.name}`,
+        `الإيميل: ${payload.email}`,
+        payload.phone ? `الهاتف: ${payload.phone}` : "",
+        `الخدمة: ${payload.service}`,
+        payload.budget ? `الميزانية: ${payload.budget}` : "",
+        `الرسالة: ${payload.message}`,
+      ].filter(Boolean).join("\n");
+      window.open(`${site.whatsapp}?text=${encodeURIComponent(lines)}`, "_blank");
+      setStatus("sent");
+    }
   }
 
   if (status === "sent") {
