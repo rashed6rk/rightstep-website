@@ -95,49 +95,53 @@ export function WorkshopsHub({ items }: { items: Workshop[] }) {
   return (
     <section className="bg-surface py-14 sm:py-20">
       <Container>
-        {/* Filters */}
-        <div className="flex flex-col gap-4 border-b border-line pb-6">
-          <FilterRow
-            label={t("filterPractice")}
-            options={[
-              { value: "all", label: t("all") },
-              ...services.map((s) => ({ value: s.key, label: s.title })),
-            ]}
-            value={practice}
-            onChange={(v) => setPractice(v as ServiceKey | "all")}
-          />
-          <FilterRow
-            label={t("filterFormat")}
-            options={[
-              { value: "all", label: t("all") },
-              { value: "person", label: t("inPerson") },
-              { value: "online", label: t("online") },
-            ]}
-            value={format}
-            onChange={(v) => setFormat(v as "all" | "online" | "person")}
-          />
-        </div>
+        {items.length > 0 && (
+          <>
+            {/* Filters */}
+            <div className="flex flex-col gap-4 border-b border-line pb-6">
+              <FilterRow
+                label={t("filterPractice")}
+                options={[
+                  { value: "all", label: t("all") },
+                  ...services.map((s) => ({ value: s.key, label: s.title })),
+                ]}
+                value={practice}
+                onChange={(v) => setPractice(v as ServiceKey | "all")}
+              />
+              <FilterRow
+                label={t("filterFormat")}
+                options={[
+                  { value: "all", label: t("all") },
+                  { value: "person", label: t("inPerson") },
+                  { value: "online", label: t("online") },
+                ]}
+                value={format}
+                onChange={(v) => setFormat(v as "all" | "online" | "person")}
+              />
+            </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-          <p aria-live="polite" className="text-sm font-semibold text-ink-muted">
-            {filtered.length === 1
-              ? t("resultsOne")
-              : t("resultsOther", { count: filtered.length })}
-          </p>
-          {active && (
-            <button
-              type="button"
-              onClick={() => {
-                setPractice("all");
-                setFormat("all");
-              }}
-              className="inline-flex min-h-8 items-center gap-1.5 py-1 text-sm font-bold text-heading transition-colors hover:text-coral-ink"
-            >
-              <Icon name="close" className="h-4 w-4" />
-              {t("clear")}
-            </button>
-          )}
-        </div>
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+              <p aria-live="polite" className="text-sm font-semibold text-ink-muted">
+                {filtered.length === 1
+                  ? t("resultsOne")
+                  : t("resultsOther", { count: filtered.length })}
+              </p>
+              {active && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPractice("all");
+                    setFormat("all");
+                  }}
+                  className="inline-flex min-h-8 items-center gap-1.5 py-1 text-sm font-bold text-heading transition-colors hover:text-coral-ink"
+                >
+                  <Icon name="close" className="h-4 w-4" />
+                  {t("clear")}
+                </button>
+              )}
+            </div>
+          </>
+        )}
 
         {filtered.length === 0 ? (
           <p className="mt-10 rounded-2xl bg-surface-alt p-8 text-center text-sm text-ink-muted">

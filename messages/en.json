@@ -252,17 +252,17 @@
     "items": [
       {
         "quote": "I've given talks for years, but the sessions helped me hear my own habits for the first time. My next keynote was a different conversation.",
-        "name": "Fatima Al Marzooqi",
+        "name": "ف. المرزوقي",
         "role": "Programme Director — Abu Dhabi"
       },
       {
         "quote": "We ran the communication workshop with our leadership team. Six weeks later the meetings themselves are different — shorter, sharper, kinder.",
-        "name": "Omar Haddad",
-        "role": "COO, Noor Logistics — Dubai"
+        "name": "أ. المنصوري",
+        "role": "COO — Dubai"
       },
       {
         "quote": "I used to freeze in front of a room. After three sessions I did my first company all-hands without a script, and the team actually listened.",
-        "name": "Layla Ibrahim",
+        "name": "س. نورة",
         "role": "Team Lead — Abu Dhabi"
       }
     ]
@@ -398,7 +398,7 @@
     },
     "form": {
       "name": "Full name",
-      "namePlaceholder": "e.g. Fatima Al Marzooqi",
+      "namePlaceholder": "e.g. Ahmed",
       "email": "Email",
       "emailPlaceholder": "you@example.com",
       "phone": "Phone",
@@ -407,10 +407,7 @@
       "serviceOptions": [
         "Communication & Public Speaking",
         "Leadership & Team Development",
-        "Coaching",
         "Corporate Training",
-        "Events & Protocol",
-        "Supplier Development",
         "Not sure yet — want to talk it through"
       ],
       "budget": "Budget (optional)",
@@ -443,7 +440,7 @@
   },
   "workshops": {
     "title": "Upcoming workshops",
-    "body": "Small-group workshops in Abu Dhabi and online, focused on public speaking, communication and confidence. Every workshop ends with something you can use, not just something you've heard.",
+    "body": "We are preparing new workshops. Stay tuned!",
     "note": "Placeholder schedule — please replace dates, venues and prices before publishing.",
     "cta": "Reserve a seat",
     "allCta": "Ask about a private workshop for your team",
@@ -452,140 +449,7 @@
     "seatsLeft": "seats left",
     "free": "Free",
     "currency": "AED",
-    "items": [
-      {
-        "id": "speak-with-confidence",
-        "practice": "communication",
-        "title": "Speak With Confidence",
-        "date": "12 September 2026",
-        "dateISO": "2026-09-12T18:00:00+04:00",
-        "duration": "90 min",
-        "location": "Abu Dhabi",
-        "level": "Beginner",
-        "seats": "18 seats left",
-        "price": "290",
-        "amount": 290,
-        "blurb": "How to speak in front of others without your voice giving out. Structure, breath, opening lines — and one live rehearsal each.",
-        "forWho": "Anyone who freezes, rushes or over-prepares when they know they'll be speaking in front of a group.",
-        "takeaway": "One rehearsed opening you can use in your next real talk.",
-        "agenda": [
-          "The three things that quietly cause nerves — and what to do instead",
-          "A repeatable opening that buys you the first 30 seconds",
-          "Live rehearsal in pairs, with structured feedback",
-          "One skill to practise every day for the following week"
-        ]
-      },
-      {
-        "id": "art-of-public-speaking",
-        "practice": "communication",
-        "title": "The Art of Public Speaking",
-        "date": "24 September 2026",
-        "dateISO": "2026-09-24T18:00:00+04:00",
-        "duration": "90 min",
-        "location": "Abu Dhabi",
-        "level": "Intermediate",
-        "seats": "16 seats left",
-        "price": "290",
-        "amount": 290,
-        "blurb": "The moving parts of a talk that actually lands — structure, story, delivery, and how they fit together.",
-        "forWho": "People who already speak in public and want to move from 'competent' to 'memorable'.",
-        "takeaway": "A framework you can use to shape any talk from three bullet points.",
-        "agenda": [
-          "The three-part shape every good talk shares",
-          "How to open, how to close, and why they matter more than the middle",
-          "Delivery: voice, pace and where to put your eyes",
-          "Rehearse a two-minute talk, get feedback, run it again"
-        ]
-      },
-      {
-        "id": "from-idea-to-impact",
-        "practice": "communication",
-        "title": "From Idea to Impact",
-        "date": "2 October 2026",
-        "dateISO": "2026-10-02T18:00:00+04:00",
-        "duration": "90 min",
-        "location": "Online",
-        "level": "Intermediate",
-        "seats": "30 seats left",
-        "price": "220",
-        "amount": 220,
-        "blurb": "How to take a good idea and shape it into a message that changes what someone decides. Practical, applied, one talk at a time.",
-        "forWho": "Founders, professionals and specialists whose ideas are stronger than their delivery.",
-        "takeaway": "A one-page message plan for a real idea you're carrying right now.",
-        "agenda": [
-          "What separates a message from a monologue",
-          "The three questions your listener is silently asking",
-          "Live redraft of one idea into a message",
-          "How to test a message before the real room"
-        ]
-      },
-      {
-        "id": "master-your-presentation",
-        "practice": "communication",
-        "title": "Master Your Presentation",
-        "date": "16 October 2026",
-        "dateISO": "2026-10-16T14:00:00+04:00",
-        "duration": "120 min",
-        "location": "Abu Dhabi",
-        "level": "Intermediate",
-        "seats": "14 seats left",
-        "price": "390",
-        "amount": 390,
-        "blurb": "A working session on the presentation you actually have to give. Bring the deck. Leave with a version people follow.",
-        "forWho": "People with a real presentation coming up in the next few weeks.",
-        "takeaway": "A revised version of your own presentation, ready to give.",
-        "agenda": [
-          "How to sharpen a deck people already made",
-          "The one slide most decks are missing",
-          "Speaker notes that actually help you — and don't read like a script",
-          "Ten minutes each on the floor, in front of the group, with feedback"
-        ]
-      },
-      {
-        "id": "body-language-that-speaks",
-        "practice": "communication",
-        "title": "Body Language That Speaks",
-        "date": "30 October 2026",
-        "dateISO": "2026-10-30T18:00:00+04:00",
-        "duration": "90 min",
-        "location": "Abu Dhabi",
-        "level": "All levels",
-        "seats": "20 seats left",
-        "price": "290",
-        "amount": 290,
-        "blurb": "What your body is saying while your mouth is talking — and how to bring the two into the same conversation.",
-        "forWho": "Anyone who has been told 'you looked nervous' after a talk they thought went well.",
-        "takeaway": "Three specific habits to change, chosen from footage of yourself.",
-        "agenda": [
-          "Posture, weight, and how a room reads authority",
-          "Hands: what to do with them, and what to stop doing",
-          "Eyes: where to look, how long, and why",
-          "Filmed rehearsal — with your permission — and playback"
-        ]
-      },
-      {
-        "id": "graduate-speaking-clinic",
-        "practice": "communication",
-        "title": "Graduate Speaking Clinic",
-        "date": "15 November 2026",
-        "dateISO": "2026-11-15T10:00:00+04:00",
-        "duration": "3 hours",
-        "location": "Abu Dhabi",
-        "level": "Graduates & early career",
-        "seats": "12 seats left",
-        "price": "0",
-        "amount": 0,
-        "blurb": "A free half-day clinic for final-year students and recent graduates. Interviews, presentations, and how to introduce yourself in a room where nobody knows you yet.",
-        "forWho": "Final-year university students and graduates in their first two years of work.",
-        "takeaway": "A rehearsed introduction and interview answer you can reuse tomorrow.",
-        "agenda": [
-          "How to introduce yourself so people remember it",
-          "Interview answers that don't sound rehearsed",
-          "A short talk about yourself, twice — once cold, once after feedback",
-          "One habit to practise every week for a month"
-        ]
-      }
-    ]
+    "items": []
   },
   "auth": {
     "panelTitle": "One account, the whole climb.",
@@ -789,8 +653,8 @@
     },
     "demoNotice": "Demo portal — data is mocked and the route is unprotected. Connect an auth provider and an API before this holds real client information.",
     "client": {
-      "name": "Fatima Al Marzooqi",
-      "company": "Gulf Retail Co."
+      "name": "Client Name",
+      "company": "Company"
     },
     "bookings": {
       "title": "Bookings",
@@ -866,7 +730,7 @@
   },
   "workshopsPage": {
     "title": "Programs & Workshops",
-    "lead": "Small-group workshops in public speaking, communication and confidence — in Abu Dhabi and online. Every workshop ends with practice and feedback, not just content.",
+    "lead": "We are preparing new workshops and training programs. Stay tuned!",
     "filterPractice": "Focus",
     "filterFormat": "Format",
     "all": "All",

@@ -30,13 +30,19 @@ async function getWorkshop(locale: string, id: string) {
   return items.find((item) => item.id === id);
 }
 
-/** Every workshop in every locale is known at build time, so prerender them. */
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const params: { locale: string; id: string }[] = [];
   for (const locale of routing.locales) {
     const tw = await getTranslations({ locale, namespace: "workshops" });
-    for (const item of tw.raw("items") as Workshop[]) {
-      params.push({ locale, id: item.id });
+    const items = tw.raw("items") as Workshop[];
+    if (items.length === 0) {
+      params.push({ locale, id: "_placeholder" });
+    } else {
+      for (const item of items) {
+        params.push({ locale, id: item.id });
+      }
     }
   }
   return params;

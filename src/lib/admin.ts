@@ -69,12 +69,12 @@ export function buildAdminData(now = Date.now()) {
   // roster of trainers/coaches will replace these when the API is wired.
   const clients: AdminClient[] = [
     {
-      id: "c-fatima",
-      name: "Fatima Al Marzooqi",
-      company: "Fatima Al Marzooqi",
+      id: "c-demo",
+      name: "عميل تجريبي",
+      company: "شركة تجريبية",
       industry: "communication",
-      initials: "FM",
-      email: "fatima@example.ae",
+      initials: "ع",
+      email: "client@example.ae",
       phone: "+971501234567",
       status: "active",
       stepKey: "improve",

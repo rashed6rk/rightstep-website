@@ -121,6 +121,8 @@ export function WorkshopsSlider() {
     }
   };
 
+  if (items.length === 0) return null;
+
   return (
     <section
       id="workshops"

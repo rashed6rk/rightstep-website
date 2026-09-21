@@ -135,11 +135,11 @@ const DAY = 24 * HOUR;
  */
 export function buildPortalData(now = Date.now(), offsetHours = 30) {
   const client: PortalClient = {
-    name: "Fatima Al Marzooqi",
-    company: "Fatima Al Marzooqi",
+    name: "اسم العميل",
+    company: "الشركة",
     industry: "communication",
-    initials: "FM",
-    email: "fatima@example.ae",
+    initials: "ع",
+    email: "client@example.ae",
     phone: "+971501234567",
     goals:
       "Deliver a confident keynote at the company all-hands in Q2 without notes.",

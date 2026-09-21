@@ -1,0 +1,14 @@
+import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  // Defaults to the standard `.next` so deployments are untouched. Setting
+  // NEXT_DIST_DIR lets a local verification build write somewhere else, so it
+  // can't overwrite the chunks a running `next dev` is serving from.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+};
+
+export default withNextIntl(nextConfig);
