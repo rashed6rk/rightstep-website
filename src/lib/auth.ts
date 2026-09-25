@@ -4,6 +4,7 @@ export type AuthUser = {
   id: number;
   name: string;
   email: string;
+  phone?: string;
   role: 'admin' | 'client';
 };
 
@@ -80,6 +81,16 @@ export async function resendOTP(email: string, purpose: 'login' | 'signup' | 're
 
 export async function getMe(): Promise<{ user: AuthUser }> {
   return apiCall('/auth/me.php');
+}
+
+export async function updateProfile(data: { name: string; email: string; phone: string }): Promise<{ success: boolean; user: AuthUser }> {
+  const res = await apiCall<{ success: boolean; user: AuthUser }>('/portal/profile.php', data);
+  if (res.user) setUser(res.user);
+  return res;
+}
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean }> {
+  return apiCall('/portal/password.php', { currentPassword, newPassword });
 }
 
 function getToken(): string | null {

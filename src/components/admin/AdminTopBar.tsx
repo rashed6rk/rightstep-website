@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Icon } from "../Icon";
 import { LogoMark } from "../Logo";
-import { owner } from "@/lib/admin";
+import { useAuth } from "@/lib/auth-context";
 
 export function AdminTopBar() {
   const t = useTranslations("admin.nav");
@@ -15,10 +15,16 @@ export function AdminTopBar() {
   const locale = useLocale();
   const otherLocale = locale === "ar" ? "en" : "ar";
   const [sheetOpen, setSheetOpen] = useState(false);
+  const { user, logout } = useAuth();
 
-  // The console-wide search has one real destination today: the client
-  // roster, which already knows how to filter by name or company. Routing
-  // through its own `?q=` rather than duplicating the filter logic here.
+  const initials = user
+    ? user.name
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+        .slice(0, 2)
+    : "";
+
   function handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key !== "Enter") return;
     const value = event.currentTarget.value.trim();
@@ -31,9 +37,6 @@ export function AdminTopBar() {
     <>
       <header className="sticky top-0 z-30 border-b border-line bg-white/95 backdrop-blur-lg">
         <div className="flex h-16 items-center gap-3 px-4 sm:h-20 sm:px-6 lg:px-8">
-          {/* Mobile brand: just the lockup. The bottom tab bar already shows
-              which admin section is active, so a duplicate label here would
-              only crowd the row. */}
           <LogoMark className="h-7 w-auto lg:hidden" />
 
           <div className="hidden max-w-md flex-1 lg:block">
@@ -93,7 +96,7 @@ export function AdminTopBar() {
               className="flex min-h-10 items-center gap-2 rounded-lg border border-line ps-1.5 pe-2.5 py-1.5 transition-colors hover:border-navy/40"
             >
               <span className="grid h-7 w-7 place-items-center rounded-md bg-navy text-[11px] font-bold text-white">
-                {owner.initials}
+                {initials}
               </span>
               <Icon
                 name="chevron"
@@ -119,6 +122,10 @@ export function AdminTopBar() {
             id="admin-sheet"
             className="fixed end-4 top-[4.5rem] z-40 w-60 rounded-2xl border border-line bg-white p-2 shadow-[var(--shadow-step-lg)] sm:top-[5.5rem]"
           >
+            <div className="border-b border-line px-3 py-3">
+              <p className="text-sm font-bold text-heading">{user?.name}</p>
+              <p className="mt-0.5 text-xs text-ink-muted">{user?.email}</p>
+            </div>
             <Link
               href="/"
               className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-ink-muted transition-colors hover:bg-surface-alt hover:text-heading"
@@ -134,13 +141,17 @@ export function AdminTopBar() {
               {t("clientPortalLink")}
             </Link>
             <div className="my-1 border-t border-line" />
-            <Link
-              href="/login"
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-ink-muted transition-colors hover:bg-surface-alt hover:text-heading"
+            <button
+              type="button"
+              onClick={() => {
+                setSheetOpen(false);
+                logout();
+              }}
+              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-ink-muted transition-colors hover:bg-surface-alt hover:text-heading"
             >
               <Icon name="logout" className="h-4.5 w-4.5" />
               {t("signOut")}
-            </Link>
+            </button>
           </div>
         </>
       )}

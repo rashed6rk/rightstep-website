@@ -2,54 +2,54 @@
 
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
-import type { PortalClient } from "@/lib/portal";
 import type { ServiceKey } from "@/lib/site";
 import { Field, PasswordField, fieldClass } from "../Field";
-import { NotConnectedNotice } from "../AuthNotice";
 import { Icon } from "../Icon";
+import { useAuth } from "@/lib/auth-context";
+import { updateProfile, changePassword } from "@/lib/auth";
 
-/**
- * Two independent forms, not one.
- *
- * Personal and company details change often and should save in one click;
- * a password change is rare and deliberate. An earlier version put both under
- * one submit with the password fields marked `required` — which meant editing
- * your name silently failed until you also typed your current password twice,
- * because the browser's own validation blocks a submit with an empty required
- * field. Splitting them means neither section can block the other, and
- * "reduce clicks" actually holds for the common case (details) instead of
- * being undercut by the rare one (password).
- */
 export function ProfileForm({
-  client,
   industries,
 }: {
-  client: PortalClient;
   industries: { key: ServiceKey; title: string }[];
 }) {
   return (
     <div className="flex flex-col gap-5">
-      <DetailsForm client={client} industries={industries} />
+      <DetailsForm industries={industries} />
       <PasswordForm />
     </div>
   );
 }
 
 function DetailsForm({
-  client,
   industries,
 }: {
-  client: PortalClient;
   industries: { key: ServiceKey; title: string }[];
 }) {
   const t = useTranslations("portal.profile");
-  const [status, setStatus] = useState<"idle" | "working" | "blocked">("idle");
+  const { user, refresh } = useAuth();
+  const [status, setStatus] = useState<"idle" | "working" | "success" | "error">("idle");
+  const [error, setError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("working");
-    // TODO: PATCH the account record, then re-verify the email if it changed.
-    window.setTimeout(() => setStatus("blocked"), 600);
+    setError("");
+
+    const form = new FormData(event.currentTarget);
+    try {
+      await updateProfile({
+        name: (form.get("name") as string).trim(),
+        email: (form.get("email") as string).trim(),
+        phone: (form.get("phone") as string).trim(),
+      });
+      await refresh();
+      setStatus("success");
+      setTimeout(() => setStatus("idle"), 3000);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("genericError"));
+      setStatus("error");
+    }
   }
 
   return (
@@ -66,7 +66,7 @@ function DetailsForm({
               type="text"
               required
               autoComplete="name"
-              defaultValue={client.name}
+              defaultValue={user?.name ?? ""}
               className={fieldClass}
             />
           </Field>
@@ -78,7 +78,7 @@ function DetailsForm({
               required
               dir="ltr"
               autoComplete="email"
-              defaultValue={client.email}
+              defaultValue={user?.email ?? ""}
               className={fieldClass}
             />
           </Field>
@@ -93,7 +93,7 @@ function DetailsForm({
               dir="ltr"
               autoComplete="tel"
               placeholder="+971 50 000 0000"
-              defaultValue={client.phone}
+              defaultValue={user?.phone ?? ""}
               className={`${fieldClass} sm:max-w-xs`}
             />
           </Field>
@@ -111,7 +111,7 @@ function DetailsForm({
                 id="pf-industry"
                 name="industry"
                 required
-                defaultValue={client.industry}
+                defaultValue="communication"
                 className={`${fieldClass} appearance-none pe-11 sm:max-w-xs`}
               >
                 {industries.map((industry) => (
@@ -132,18 +132,30 @@ function DetailsForm({
               name="goals"
               rows={3}
               placeholder={t("goalsPlaceholder")}
-              defaultValue={client.goals}
               className={`${fieldClass} resize-y`}
             />
           </Field>
         </div>
       </fieldset>
 
-      {status === "blocked" && (
-        <NotConnectedNotice
-          title={t("notConnectedTitle")}
-          body={t("notConnectedBody")}
-        />
+      {status === "error" && (
+        <div
+          role="alert"
+          className="flex items-start gap-3.5 rounded-xl border border-red-200 bg-red-50 p-4"
+        >
+          <Icon name="secure" className="mt-0.5 h-5 w-5 text-red-600" />
+          <p className="text-sm text-red-800">{error}</p>
+        </div>
+      )}
+
+      {status === "success" && (
+        <div
+          role="status"
+          className="flex items-start gap-3.5 rounded-xl border border-teal-200 bg-teal-50 p-4"
+        >
+          <Icon name="check" className="mt-0.5 h-5 w-5 text-teal-700" />
+          <p className="text-sm font-semibold text-teal-800">{t("saved")}</p>
+        </div>
       )}
 
       <button
@@ -159,13 +171,33 @@ function DetailsForm({
 
 function PasswordForm() {
   const t = useTranslations("portal.profile");
-  const [status, setStatus] = useState<"idle" | "working" | "blocked">("idle");
+  const [status, setStatus] = useState<"idle" | "working" | "success" | "error">("idle");
+  const [error, setError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("working");
-    // TODO: verify currentPassword server-side before accepting newPassword.
-    window.setTimeout(() => setStatus("blocked"), 600);
+    setError("");
+
+    const form = new FormData(event.currentTarget);
+    const currentPw = (form.get("currentPassword") as string).trim();
+    const newPw = (form.get("newPassword") as string).trim();
+
+    if (newPw.length < 12) {
+      setError(t("passwordTooShort"));
+      setStatus("error");
+      return;
+    }
+
+    try {
+      await changePassword(currentPw, newPw);
+      setStatus("success");
+      event.currentTarget.reset();
+      setTimeout(() => setStatus("idle"), 3000);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t("genericError"));
+      setStatus("error");
+    }
   }
 
   return (
@@ -188,12 +220,23 @@ function PasswordForm() {
           />
         </div>
 
-        {status === "blocked" && (
-          <div className="mt-5">
-            <NotConnectedNotice
-              title={t("notConnectedTitle")}
-              body={t("notConnectedBody")}
-            />
+        {status === "error" && (
+          <div
+            role="alert"
+            className="mt-5 flex items-start gap-3.5 rounded-xl border border-red-200 bg-red-50 p-4"
+          >
+            <Icon name="secure" className="mt-0.5 h-5 w-5 text-red-600" />
+            <p className="text-sm text-red-800">{error}</p>
+          </div>
+        )}
+
+        {status === "success" && (
+          <div
+            role="status"
+            className="mt-5 flex items-start gap-3.5 rounded-xl border border-teal-200 bg-teal-50 p-4"
+          >
+            <Icon name="check" className="mt-0.5 h-5 w-5 text-teal-700" />
+            <p className="text-sm font-semibold text-teal-800">{t("passwordChanged")}</p>
           </div>
         )}
 

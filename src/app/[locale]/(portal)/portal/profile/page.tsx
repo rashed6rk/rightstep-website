@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import type { ServiceKey } from "@/lib/site";
-import { buildPortalData } from "@/lib/portal";
 import { ProfileForm } from "@/components/portal/ProfileForm";
 
 export async function generateMetadata({
@@ -32,7 +31,6 @@ export default async function ProfilePage({
 function ProfileContent() {
   const t = useTranslations("portal.profile");
   const tServices = useTranslations("servicesOverview");
-  const { client } = buildPortalData();
   const industries = tServices.raw("items") as {
     key: ServiceKey;
     title: string;
@@ -50,7 +48,7 @@ function ProfileContent() {
       </header>
 
       <div className="mt-6 sm:mt-8">
-        <ProfileForm client={client} industries={industries} />
+        <ProfileForm industries={industries} />
       </div>
     </div>
   );

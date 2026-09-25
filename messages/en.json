@@ -724,8 +724,10 @@
       "newPassword": "New password",
       "saveCta": "Save changes",
       "saving": "Saving…",
-      "notConnectedTitle": "Changes aren't saved yet",
-      "notConnectedBody": "This is the finished form. Connect it to your account system and these edits will take effect immediately."
+      "saved": "Changes saved",
+      "passwordChanged": "Password changed successfully",
+      "passwordTooShort": "New password must be at least 12 characters",
+      "genericError": "Something went wrong, please try again"
     }
   },
   "workshopsPage": {

@@ -8,6 +8,7 @@ import { JourneyStair } from "@/components/portal/JourneyStair";
 import { TurnCard } from "@/components/portal/TurnCard";
 import { NextSessionCard } from "@/components/portal/NextSessionCard";
 import { DeliverablesPreview } from "@/components/portal/DeliverablesPreview";
+import { PortalGreeting } from "@/components/portal/PortalGreeting";
 import { Icon, type IconName } from "@/components/Icon";
 
 export async function generateMetadata({
@@ -45,11 +46,6 @@ function OverviewContent() {
     tServices.raw("items") as { key: string; title: string }[]
   ).find((s) => s.key === client.industry)?.title;
 
-  // Greeting follows the client's own clock, not the server's timezone.
-  const hour = new Date().getHours();
-  const greetKey =
-    hour < 12 ? "morning" : hour < 18 ? "afternoon" : "evening";
-
   // The deadline sentence belongs to the turn card but is computed here so the
   // card itself stays free of date maths.
   const dueISO = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
@@ -80,11 +76,7 @@ function OverviewContent() {
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       {/* Greeting */}
       <header>
-        <h1 className="text-[1.75rem] leading-tight font-extrabold text-balance text-heading sm:text-[2.25rem]">
-          {t(`greeting.${greetKey}` as "greeting.morning", {
-            name: t("client.name").split(" ")[0],
-          })}
-        </h1>
+        <PortalGreeting />
         <p className="mt-1.5 text-sm text-ink-muted sm:text-base">
           {t("greeting.sub", {
             company: t("client.company"),
@@ -136,9 +128,6 @@ function OverviewContent() {
         </ul>
       </section>
 
-      <p className="mt-8 text-xs leading-relaxed text-ink-faint">
-        {t("demoNotice")}
-      </p>
     </div>
   );
 }
