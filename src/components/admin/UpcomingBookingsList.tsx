@@ -15,7 +15,7 @@ export function UpcomingBookingsList({
   clientName,
 }: {
   bookings: AdminBooking[];
-  clientName: (clientId: string) => string;
+  clientName: (clientId: string | number) => string;
 }) {
   const t = useTranslations("admin.todaySessions");
   const locale = useLocale();

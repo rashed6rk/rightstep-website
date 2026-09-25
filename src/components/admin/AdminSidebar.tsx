@@ -5,7 +5,7 @@ import { Link, usePathname } from "@/i18n/routing";
 import { Icon } from "../Icon";
 import { LogoMark } from "../Logo";
 import { adminNav } from "./nav";
-import type { AdminData } from "@/lib/admin";
+import type { AdminStats } from "@/lib/api";
 
 /**
  * Desktop sidebar for the owner's console. Carries the day's headline number
@@ -13,7 +13,7 @@ import type { AdminData } from "@/lib/admin";
  * its journey miniature always in view — the one fact that matters most is
  * never more than a glance away, wherever in the console the owner is.
  */
-export function AdminSidebar({ stats }: { stats: AdminData["stats"] }) {
+export function AdminSidebar({ stats }: { stats: AdminStats }) {
   const t = useTranslations("admin.nav");
   const tAttention = useTranslations("admin.attention");
   const pathname = usePathname();

@@ -32,11 +32,11 @@ export function ResourceLibraryExplorer({
     () =>
       clientId === "all"
         ? resources
-        : resources.filter((r) => r.clientId === clientId),
+        : resources.filter((r) => String(r.clientId) === clientId),
     [resources, clientId],
   );
 
-  const clientOf = (id: string) => clients.find((c) => c.id === id);
+  const clientOf = (id: string | number) => clients.find((c) => String(c.id) === String(id));
 
   return (
     <div className="flex flex-col gap-5">

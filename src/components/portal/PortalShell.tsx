@@ -1,17 +1,25 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
-import { buildPortalData } from "@/lib/portal";
+import { getPortalDashboard } from "@/lib/api";
+import type { JourneyStep } from "@/lib/portal";
 import { PortalSidebar } from "./PortalSidebar";
 import { PortalTopBar } from "./PortalTopBar";
 import { PortalTabs } from "./PortalTabs";
 import { OverviewSkeleton } from "./Skeleton";
 
-const { journey } = buildPortalData();
-
 function PortalInner({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
+  const [journey, setJourney] = useState<JourneyStep[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      getPortalDashboard()
+        .then((data) => setJourney(data.journey))
+        .catch(() => {});
+    }
+  }, [user]);
 
   if (loading || !user) {
     return (

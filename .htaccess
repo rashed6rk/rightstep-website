@@ -1,8 +1,7 @@
 Options -Indexes
 DirectorySlash Off
 
-ErrorDocument 404 /index.php
-ErrorDocument 403 /index.php
+ErrorDocument 404 /404.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
@@ -11,6 +10,10 @@ ErrorDocument 403 /index.php
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
 
-  # Everything else goes to PHP router
-  RewriteRule ^ /index.php [L]
+  # Try .html extension for clean URLs
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^ %{REQUEST_URI}.html [L]
+
+  # Dynamic client detail — serve the template page for any numeric ID
+  RewriteRule ^(ar|en)/admin/clients/[0-9]+$ /$1/admin/clients/_.html [L]
 </IfModule>

@@ -954,7 +954,8 @@
       "notConnectedBody": "This action is ready to wire up — connect it to your systems and it will take effect immediately.",
       "statusActive": "Active",
       "statusPaused": "Paused",
-      "statusCompleted": "Completed"
+      "statusCompleted": "Completed",
+      "notFound": "Client not found."
     },
     "bookingsPage": {
       "title": "Sessions",

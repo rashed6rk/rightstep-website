@@ -1,6 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { formatAmount, formatCount } from "@/lib/format";
-import type { AdminData } from "@/lib/admin";
+import type { AdminStats } from "@/lib/api";
 import { Icon, type IconName } from "../Icon";
 
 /**
@@ -9,7 +9,7 @@ import { Icon, type IconName } from "../Icon";
  * people are stuck waiting on a reply. Everything else on the page explains
  * one of these four.
  */
-export function StatsRow({ stats }: { stats: AdminData["stats"] }) {
+export function StatsRow({ stats }: { stats: AdminStats }) {
   const t = useTranslations("admin.stats");
   const tWorkshops = useTranslations("workshops");
   const locale = useLocale();
@@ -18,7 +18,7 @@ export function StatsRow({ stats }: { stats: AdminData["stats"] }) {
   // separate because the data field carries its unit ("...Aed") and the
   // translation key shouldn't.
   const items: {
-    dataKey: keyof AdminData["stats"];
+    dataKey: keyof AdminStats;
     labelKey: "activeClients" | "monthlyRevenue" | "sessionsThisWeek" | "needsAttention";
     icon: IconName;
     tone: string;

@@ -1,16 +1,26 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
-import { buildAdminData } from "@/lib/admin";
+import { getAdminStats, type AdminStats } from "@/lib/api";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminTopBar } from "./AdminTopBar";
 import { AdminTabs } from "./AdminTabs";
 
-const { stats } = buildAdminData();
-
 function AdminInner({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
+  const [stats, setStats] = useState<AdminStats>({
+    activeClients: 0,
+    monthlyRevenueAed: 0,
+    sessionsThisWeek: 0,
+    needsAttention: 0,
+  });
+
+  useEffect(() => {
+    if (user) {
+      getAdminStats().then(setStats).catch(() => {});
+    }
+  }, [user]);
 
   if (loading || !user) {
     return (
