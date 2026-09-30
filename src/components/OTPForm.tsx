@@ -12,7 +12,7 @@ type Props = {
   onBack: () => void;
 };
 
-const DIGIT_COUNT = 6;
+const DIGIT_COUNT = 4;
 
 export function OTPForm({ otpId: initialOtpId, email, purpose, onVerified, onBack }: Props) {
   const t = useTranslations("otp");

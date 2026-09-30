@@ -31,7 +31,7 @@ $DB_PASS = env('DB_PASS');
 
 $JWT_SECRET = env('JWT_SECRET', 'CHANGE_ME_IN_PRODUCTION_' . md5(__DIR__));
 $OTP_EXPIRY_MINUTES = 10;
-$OTP_LENGTH = 6;
+$OTP_LENGTH = 4;
 
 $SMTP_HOST = env('SMTP_HOST', 'smtp.hostinger.com');
 $SMTP_PORT = (int) env('SMTP_PORT', '465');

@@ -470,7 +470,7 @@
   },
   "otp": {
     "title": "Enter verification code",
-    "sentTo": "We sent a 6-digit code to",
+    "sentTo": "We sent a 4-digit code to",
     "digit": "Digit",
     "verifying": "Verifying…",
     "resend": "Resend code",
