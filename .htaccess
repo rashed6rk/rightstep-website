@@ -6,6 +6,9 @@ ErrorDocument 404 /404.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # Root → default locale
+  RewriteRule ^$ /ar [R=302,L]
+
   # Existing file — serve directly
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
