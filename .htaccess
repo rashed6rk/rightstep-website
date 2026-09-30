@@ -6,8 +6,8 @@ ErrorDocument 404 /404.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Root → default locale
-  RewriteRule ^$ /ar [R=302,L]
+  # Root URL → serve Arabic home directly (no redirect)
+  RewriteRule ^$ /ar.html [L]
 
   # Existing file — serve directly
   RewriteCond %{REQUEST_FILENAME} -f
