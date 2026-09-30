@@ -1,7 +1,7 @@
 export const site = {
   phone: "+971555520071",
   phoneDisplay: "+971 55 552 0071",
-  email: "rightstepscons@gmail.com",
+  email: "contact@rightstepae.com",
   whatsapp: "https://wa.me/971555520071",
   social: {
     linkedin: "https://www.linkedin.com/",
