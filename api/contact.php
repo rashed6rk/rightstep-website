@@ -22,75 +22,39 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     jsonError('بريد إلكتروني غير صالح', 400);
 }
 
+$messageHtml = nl2br(htmlspecialchars($message));
+
+// --- 1. Notification email to Right Step ---
 $to = 'contact@rightstepae.com';
 $subject = "=?UTF-8?B?" . base64_encode("رسالة جديدة من الموقع — $name") . "?=";
 
-$body = <<<HTML
-<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head><meta charset="utf-8"></head>
-<body style="font-family: 'Segoe UI', Tahoma, sans-serif; direction: rtl; text-align: right; background: #f7f7f7; padding: 40px 0;">
-<div style="max-width: 560px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-  <h2 style="color: #12294B; margin: 0 0 24px;">رسالة جديدة من الموقع</h2>
+$rows = '';
+$fields = [
+    ['الاسم', $name],
+    ['البريد', "<a href=\"mailto:{$email}\" style=\"color: #1596A0; text-decoration: none;\">{$email}</a>"],
+];
+if ($phone) $fields[] = ['الهاتف', "<a href=\"tel:{$phone}\" style=\"color: #1596A0; text-decoration: none;\">{$phone}</a>"];
+if ($service) $fields[] = ['الخدمة', $service];
+if ($budget) $fields[] = ['الميزانية', $budget];
+$fields[] = ['الرسالة', $messageHtml];
 
-  <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
-    <tr>
-      <td style="padding: 10px 0; color: #888; width: 120px; vertical-align: top;">الاسم</td>
-      <td style="padding: 10px 0; color: #333; font-weight: 600;">{$name}</td>
-    </tr>
-    <tr>
-      <td style="padding: 10px 0; color: #888; border-top: 1px solid #f0f0f0; vertical-align: top;">البريد</td>
-      <td style="padding: 10px 0; color: #333; border-top: 1px solid #f0f0f0;">
-        <a href="mailto:{$email}" style="color: #1596A0; text-decoration: none;">{$email}</a>
-      </td>
-    </tr>
-HTML;
-
-if ($phone) {
-    $body .= <<<HTML
-    <tr>
-      <td style="padding: 10px 0; color: #888; border-top: 1px solid #f0f0f0; vertical-align: top;">الهاتف</td>
-      <td style="padding: 10px 0; color: #333; border-top: 1px solid #f0f0f0;">
-        <a href="tel:{$phone}" style="color: #1596A0; text-decoration: none;">{$phone}</a>
-      </td>
-    </tr>
-HTML;
+foreach ($fields as $i => $f) {
+    $border = $i > 0 ? 'border-top: 1px solid #dae1ea;' : '';
+    $rows .= "<tr>
+      <td style=\"padding: 12px 0; color: #636e7d; width: 100px; vertical-align: top; font-size: 13px; {$border}\">{$f[0]}</td>
+      <td style=\"padding: 12px 0; color: #1B2430; font-size: 14px; line-height: 1.7; {$border}\">{$f[1]}</td>
+    </tr>";
 }
 
-if ($service) {
-    $body .= <<<HTML
-    <tr>
-      <td style="padding: 10px 0; color: #888; border-top: 1px solid #f0f0f0; vertical-align: top;">الخدمة</td>
-      <td style="padding: 10px 0; color: #333; border-top: 1px solid #f0f0f0;">{$service}</td>
-    </tr>
+$notifContent = <<<HTML
+      <p style="color: #12294B; font-size: 18px; font-weight: 700; margin: 0 0 20px;">رسالة جديدة من الموقع</p>
+      <table style="width: 100%; border-collapse: collapse;">{$rows}</table>
+      <div style="margin-top: 24px; text-align: center;">
+        <a href="mailto:{$email}" style="display: inline-block; background: #E8873A; color: #12294B; padding: 12px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 14px;">الرد على {$name}</a>
+      </div>
 HTML;
-}
 
-if ($budget) {
-    $body .= <<<HTML
-    <tr>
-      <td style="padding: 10px 0; color: #888; border-top: 1px solid #f0f0f0; vertical-align: top;">الميزانية</td>
-      <td style="padding: 10px 0; color: #333; border-top: 1px solid #f0f0f0;">{$budget}</td>
-    </tr>
-HTML;
-}
-
-$messageHtml = nl2br(htmlspecialchars($message));
-$body .= <<<HTML
-    <tr>
-      <td style="padding: 10px 0; color: #888; border-top: 1px solid #f0f0f0; vertical-align: top;">الرسالة</td>
-      <td style="padding: 10px 0; color: #333; border-top: 1px solid #f0f0f0; line-height: 1.7;">{$messageHtml}</td>
-    </tr>
-  </table>
-
-  <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
-  <p style="color: #aaa; font-size: 12px; text-align: center;">
-    أُرسلت من نموذج التواصل في rightstepae.com
-  </p>
-</div>
-</body>
-</html>
-HTML;
+$body = emailWrap($notifContent);
 
 global $SMTP_USER, $SMTP_FROM_NAME;
 $headers = [
@@ -106,47 +70,30 @@ if (!$sent) {
     jsonError('فشل إرسال الرسالة. حاول مرة أخرى.', 500);
 }
 
-// Send auto-reply to the client
-$replySubject = "=?UTF-8?B?" . base64_encode("شكراً لتواصلك — الخطوة الصحيحة للاستشارات") . "?=";
-$replyBody = <<<HTML
-<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head><meta charset="utf-8"></head>
-<body style="font-family: 'Segoe UI', Tahoma, sans-serif; direction: rtl; text-align: right; background: #f7f7f7; padding: 40px 0;">
-<div style="max-width: 520px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-  <div style="text-align: center; margin-bottom: 24px;">
-    <h2 style="color: #12294B; margin: 0 0 4px;">الخطوة الصحيحة للاستشارات</h2>
-    <p style="color: #1596A0; font-size: 13px; margin: 0;">Right Step Consultancy</p>
-  </div>
+// --- 2. Auto-reply to the client ---
+$replySubject = "=?UTF-8?B?" . base64_encode("شكراً لتواصلك — Right Step") . "?=";
 
-  <p style="color: #333; font-size: 16px; margin-bottom: 4px;">مرحباً {$name}،</p>
-  <p style="color: #555; font-size: 15px; line-height: 1.8;">
-    شكراً لتواصلك معنا. وصلتنا رسالتك وسنرد عليك في أقرب وقت ممكن، عادةً خلال ٢٤ ساعة عمل.
-  </p>
+$replyContent = <<<HTML
+      <p style="color: #1B2430; font-size: 16px; margin: 0 0 8px;">مرحباً {$name}،</p>
+      <p style="color: #4C5B6E; font-size: 15px; margin: 0 0 24px; line-height: 1.8;">
+        شكراً لتواصلك معنا. وصلتنا رسالتك وسنرد عليك في أقرب وقت ممكن، عادةً خلال ٢٤ ساعة عمل.
+      </p>
 
-  <div style="background: #f0f7f7; border-radius: 12px; padding: 20px; margin: 20px 0; border-right: 4px solid #1596A0;">
-    <p style="color: #12294B; font-weight: 600; font-size: 14px; margin: 0 0 8px;">ملخص رسالتك:</p>
-    <p style="color: #555; font-size: 14px; margin: 4px 0;">الخدمة: {$service}</p>
-    <p style="color: #555; font-size: 14px; margin: 4px 0; line-height: 1.6;">الرسالة: {$messageHtml}</p>
-  </div>
+      <div style="background: #ecf6f7; border-radius: 12px; padding: 20px; margin: 0 0 24px; border-right: 4px solid #1596A0;">
+        <p style="color: #12294B; font-weight: 700; font-size: 14px; margin: 0 0 10px;">ملخص رسالتك:</p>
+        <p style="color: #4C5B6E; font-size: 14px; margin: 4px 0;"><strong style="color: #12294B;">الخدمة:</strong> {$service}</p>
+        <p style="color: #4C5B6E; font-size: 14px; margin: 4px 0; line-height: 1.6;"><strong style="color: #12294B;">الرسالة:</strong> {$messageHtml}</p>
+      </div>
 
-  <p style="color: #555; font-size: 15px; line-height: 1.8;">
-    إذا كان لديك أي استفسار عاجل، تواصل معنا مباشرة عبر واتساب:
-  </p>
-  <div style="text-align: center; margin: 20px 0;">
-    <a href="https://wa.me/971555520071" style="display: inline-block; background: #25D366; color: white; padding: 12px 28px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 15px;">تواصل عبر واتساب</a>
-  </div>
-
-  <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
-  <p style="color: #aaa; font-size: 12px; text-align: center;">
-    الخطوة الصحيحة للاستشارات — أبوظبي<br>
-    <a href="https://rightstepae.com" style="color: #1596A0; text-decoration: none;">rightstepae.com</a>
-     · <a href="tel:+971555520071" style="color: #1596A0; text-decoration: none;">+971 55 552 0071</a>
-  </p>
-</div>
-</body>
-</html>
+      <p style="color: #4C5B6E; font-size: 15px; margin: 0 0 16px; line-height: 1.8;">
+        إذا كان لديك أي استفسار عاجل، تواصل معنا مباشرة:
+      </p>
+      <div style="text-align: center;">
+        <a href="https://wa.me/971555520071" style="display: inline-block; background: #1596A0; color: #ffffff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px;">تواصل عبر واتساب</a>
+      </div>
 HTML;
+
+$replyBody = emailWrap($replyContent);
 
 $replyHeaders = [
     "From: $SMTP_FROM_NAME <$SMTP_USER>",
@@ -156,7 +103,7 @@ $replyHeaders = [
 ];
 @mail($email, $replySubject, $replyBody, implode("\r\n", $replyHeaders));
 
-// Save to database if available
+// --- 3. Save to database ---
 try {
     $db = getDB();
     $stmt = $db->prepare("

@@ -131,33 +131,81 @@ function requireAuth(): array {
     return $payload;
 }
 
+function emailWrap(string $content): string {
+    return <<<HTML
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head><meta charset="utf-8"></head>
+<body style="margin: 0; padding: 0; background: #f3f8ff; font-family: -apple-system, 'Segoe UI', Tahoma, sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #f3f8ff; padding: 40px 16px;">
+<tr><td align="center">
+<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width: 560px; width: 100%; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(18,41,75,0.08);">
+
+  <!-- Header bar -->
+  <tr>
+    <td style="background: #12294B; padding: 24px 32px; text-align: center;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+        <td style="text-align: center;">
+          <span style="font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: 1px;">RIGHT STEP</span>
+          <br>
+          <span style="font-size: 11px; color: #92CACF; letter-spacing: 2px;">CONSULTANCY</span>
+        </td>
+      </tr></table>
+      <div style="margin-top: 12px; height: 3px; background: linear-gradient(90deg, #1596A0 0%, #C9A227 50%, #E8873A 100%); border-radius: 2px;"></div>
+    </td>
+  </tr>
+
+  <!-- Body content -->
+  <tr>
+    <td style="padding: 32px; direction: rtl; text-align: right;">
+      {$content}
+    </td>
+  </tr>
+
+  <!-- Footer -->
+  <tr>
+    <td style="background: #f6f8fa; padding: 20px 32px; border-top: 1px solid #dae1ea;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+        <td style="text-align: center;">
+          <p style="margin: 0 0 6px; font-size: 12px; color: #636e7d;">
+            Right Step Consultancy — Abu Dhabi, UAE
+          </p>
+          <p style="margin: 0; font-size: 11px;">
+            <a href="https://rightstepae.com" style="color: #1596A0; text-decoration: none;">rightstepae.com</a>
+            &nbsp;·&nbsp;
+            <a href="tel:+971555520071" style="color: #1596A0; text-decoration: none;">+971 55 552 0071</a>
+            &nbsp;·&nbsp;
+            <a href="https://wa.me/971555520071" style="color: #25D366; text-decoration: none;">WhatsApp</a>
+          </p>
+        </td>
+      </tr></table>
+    </td>
+  </tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>
+HTML;
+}
+
 function sendOTPEmail(string $email, string $otp, string $name = '') {
     global $SMTP_HOST, $SMTP_PORT, $SMTP_USER, $SMTP_PASS, $SMTP_FROM_NAME;
 
     $greeting = $name ? "مرحباً $name" : 'مرحباً';
-    $subject = "=?UTF-8?B?" . base64_encode("رمز التحقق — رايت ستيب") . "?=";
+    $subject = "=?UTF-8?B?" . base64_encode("رمز التحقق — Right Step") . "?=";
 
-    $body = <<<HTML
-<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head><meta charset="utf-8"></head>
-<body style="font-family: 'Segoe UI', Tahoma, sans-serif; direction: rtl; text-align: right; background: #f7f7f7; padding: 40px 0;">
-<div style="max-width: 480px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-  <div style="text-align: center; margin-bottom: 32px;">
-    <h2 style="color: #12294B; margin: 0;">رايت ستيب للاستشارات</h2>
-  </div>
-  <p style="color: #333; font-size: 16px;">{$greeting}،</p>
-  <p style="color: #555; font-size: 15px;">رمز التحقق الخاص بك:</p>
-  <div style="text-align: center; margin: 24px 0;">
-    <span style="display: inline-block; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #12294B; background: #f0f7f7; padding: 16px 32px; border-radius: 12px; border: 2px solid #1596A0;">{$otp}</span>
-  </div>
-  <p style="color: #888; font-size: 13px;">ينتهي هذا الرمز خلال ١٠ دقائق. لا تشاركه مع أحد.</p>
-  <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;">
-  <p style="color: #aaa; font-size: 12px; text-align: center;">Right Step Consultancy — Abu Dhabi</p>
-</div>
-</body>
-</html>
+    $content = <<<HTML
+      <p style="color: #1B2430; font-size: 16px; margin: 0 0 8px;">{$greeting}،</p>
+      <p style="color: #4C5B6E; font-size: 15px; margin: 0 0 24px; line-height: 1.6;">رمز التحقق الخاص بك:</p>
+      <div style="text-align: center; margin: 0 0 24px;">
+        <span style="display: inline-block; font-size: 36px; font-weight: 800; letter-spacing: 10px; color: #12294B; background: #ecf6f7; padding: 18px 36px; border-radius: 12px; border: 2px solid #1596A0;">{$otp}</span>
+      </div>
+      <p style="color: #636e7d; font-size: 13px; margin: 0; line-height: 1.6;">ينتهي هذا الرمز خلال ١٠ دقائق. لا تشاركه مع أحد.</p>
 HTML;
+
+    $body = emailWrap($content);
 
     $headers = [
         "From: $SMTP_FROM_NAME <$SMTP_USER>",
