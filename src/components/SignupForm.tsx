@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { Field, PasswordField, fieldClass } from "./Field";
 import { OTPForm } from "./OTPForm";
 import { signup, getStoredUser } from "@/lib/auth";
